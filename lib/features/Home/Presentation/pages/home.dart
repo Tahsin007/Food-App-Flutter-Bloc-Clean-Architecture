@@ -6,6 +6,7 @@ import 'package:stack_food/features/Home/Presentation/pages/widgets/bottom_nav.d
 import 'package:stack_food/features/Home/Presentation/pages/widgets/categories_section.dart';
 import 'package:stack_food/features/Home/Presentation/pages/widgets/food_campaign_section.dart';
 import 'package:stack_food/features/Home/Presentation/pages/widgets/popular_food.dart';
+import 'package:stack_food/features/Home/Presentation/pages/widgets/restaurent_section.dart';
 
 class StackFoodHome extends StatefulWidget {
   const StackFoodHome({super.key});
@@ -53,6 +54,8 @@ class _StackFoodHomeState extends State<StackFoodHome> {
               PopularFoodSection(),
               SizedBox(height: 30),
               FoodCampaignSection(),
+              SizedBox(height: 20),
+              RestaurentSection(),
             ],
           ),
         ),
