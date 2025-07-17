@@ -29,25 +29,7 @@ class _StackFoodHomeState extends State<StackFoodHome> {
             children: [
               AppSearchBar(hintText: "Search food or restaurant here..."),
               SizedBox(height: 20),
-              MenuBannerSection(
-                banners: [
-                  BannerItem(
-                    imageUrl: 'https://example.com/banner1.jpg',
-                    title: 'Special Menu',
-                    subtitle: 'Get 20% off on all items',
-                  ),
-                  BannerItem(
-                    imageUrl: 'https://example.com/banner2.jpg',
-                    title: 'Fresh Ingredients',
-                    subtitle: 'Farm to table experience',
-                  ),
-                  BannerItem(
-                    imageUrl: 'https://example.com/banner3.jpg',
-                    title: 'Fast Delivery',
-                    subtitle: 'Order now and get it in 30 minutes',
-                  ),
-                ],
-              ),
+              BannerSection(),
               SizedBox(height: 20),
               CategoriesSection(),
               SizedBox(height: 20),
