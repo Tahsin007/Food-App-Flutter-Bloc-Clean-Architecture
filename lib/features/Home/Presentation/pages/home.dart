@@ -1,0 +1,51 @@
+import 'package:flutter/material.dart';
+import 'package:stack_food/core/theme/app_pallete.dart';
+
+class StackFoodHome extends StatefulWidget {
+  const StackFoodHome({super.key});
+
+  @override
+  State<StackFoodHome> createState() => _StackFoodHomeState();
+}
+
+class _StackFoodHomeState extends State<StackFoodHome> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: AppPallete.lightGray,
+      appBar: _buildAppBar(),
+    );
+  }
+
+    PreferredSizeWidget _buildAppBar() {
+    return AppBar(
+      backgroundColor: AppPallete.backgroundColor,
+      elevation: 0,
+      leading: Icon(Icons.location_on, color: AppPallete.darkGray),
+      title: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Your Location',
+            style: TextStyle(
+              color: AppPallete.darkGray,
+              fontSize: 12,
+            ),
+          ),
+          Text(
+            'New York, NY',
+            style: TextStyle(
+              color: AppPallete.textColor,
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
+      ),
+      actions: [
+        Icon(Icons.notifications_outlined, color: AppPallete.black),
+        SizedBox(width: 16),
+      ],
+    );
+  }
+}
