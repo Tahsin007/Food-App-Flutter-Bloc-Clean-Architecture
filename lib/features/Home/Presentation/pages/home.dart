@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:stack_food/core/theme/app_pallete.dart';
+import 'package:stack_food/features/Home/Presentation/pages/widgets/bottom_nav.dart';
 
 class StackFoodHome extends StatefulWidget {
   const StackFoodHome({super.key});
@@ -14,10 +15,11 @@ class _StackFoodHomeState extends State<StackFoodHome> {
     return Scaffold(
       backgroundColor: AppPallete.lightGray,
       appBar: _buildAppBar(),
+      bottomNavigationBar: const AppBottomNav(),
     );
   }
 
-    PreferredSizeWidget _buildAppBar() {
+  PreferredSizeWidget _buildAppBar() {
     return AppBar(
       backgroundColor: AppPallete.backgroundColor,
       elevation: 0,
@@ -27,10 +29,7 @@ class _StackFoodHomeState extends State<StackFoodHome> {
         children: [
           Text(
             'Your Location',
-            style: TextStyle(
-              color: AppPallete.darkGray,
-              fontSize: 12,
-            ),
+            style: TextStyle(color: AppPallete.darkGray, fontSize: 12),
           ),
           Text(
             'New York, NY',
