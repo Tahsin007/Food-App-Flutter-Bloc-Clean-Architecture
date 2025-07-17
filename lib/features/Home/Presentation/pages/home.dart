@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:stack_food/core/theme/app_pallete.dart';
+import 'package:stack_food/features/Home/Presentation/pages/widgets/app_search_bar.dart';
 import 'package:stack_food/features/Home/Presentation/pages/widgets/bottom_nav.dart';
 
 class StackFoodHome extends StatefulWidget {
@@ -16,6 +17,13 @@ class _StackFoodHomeState extends State<StackFoodHome> {
       backgroundColor: AppPallete.lightGray,
       appBar: _buildAppBar(),
       bottomNavigationBar: const AppBottomNav(),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            AppSearchBar(hintText: "Search food or restaurant here..."),
+          ],
+        ),
+      ),
     );
   }
 
