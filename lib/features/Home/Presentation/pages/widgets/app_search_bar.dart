@@ -5,12 +5,18 @@ class AppSearchBar extends StatelessWidget {
   final Function(String)? onChanged;
   final Function(String)? onSubmitted;
   final TextEditingController? controller;
-  const AppSearchBar({super.key, required this.hintText, this.onChanged, this.onSubmitted, this.controller});
+  const AppSearchBar({
+    super.key,
+    required this.hintText,
+    this.onChanged,
+    this.onSubmitted,
+    this.controller,
+  });
 
   @override
   Widget build(BuildContext context) {
-      return Container(
-      padding: EdgeInsets.all(16),
+    return Container(
+      // padding: EdgeInsets.all(16),
       child: TextField(
         onChanged: onChanged,
         onSubmitted: onSubmitted,

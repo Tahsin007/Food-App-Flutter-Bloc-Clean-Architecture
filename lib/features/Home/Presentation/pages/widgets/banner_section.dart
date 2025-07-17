@@ -27,7 +27,7 @@ class _MenuBannerSectionState extends State<MenuBannerSection> {
   void initState() {
     super.initState();
     _pageController = PageController();
-    
+
     if (widget.autoPlay && widget.banners.isNotEmpty) {
       _startAutoPlay();
     }
@@ -47,7 +47,7 @@ class _MenuBannerSectionState extends State<MenuBannerSection> {
       } else {
         _currentIndex = 0;
       }
-      
+
       if (_pageController.hasClients) {
         _pageController.animateToPage(
           _currentIndex,
@@ -78,7 +78,7 @@ class _MenuBannerSectionState extends State<MenuBannerSection> {
       children: [
         Container(
           height: 160,
-          margin: EdgeInsets.symmetric(horizontal: 16),
+          // margin: EdgeInsets.symmetric(horizontal: 16),
           child: GestureDetector(
             onPanStart: (_) => _stopAutoPlay(),
             onPanEnd: (_) => _resumeAutoPlay(),
@@ -93,7 +93,7 @@ class _MenuBannerSectionState extends State<MenuBannerSection> {
               itemBuilder: (context, index) {
                 final banner = widget.banners[index];
                 return Container(
-                  margin: EdgeInsets.only(right: 8),
+                  // margin: EdgeInsets.only(right: 8),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(12),
                     boxShadow: [
@@ -124,20 +124,26 @@ class _MenuBannerSectionState extends State<MenuBannerSection> {
                                     ),
                                   );
                                 },
-                                loadingBuilder: (context, child, loadingProgress) {
-                                  if (loadingProgress == null) return child;
-                                  return Container(
-                                    color: Colors.grey[300],
-                                    child: Center(
-                                      child: CircularProgressIndicator(
-                                        value: loadingProgress.expectedTotalBytes != null
-                                            ? loadingProgress.cumulativeBytesLoaded /
-                                                loadingProgress.expectedTotalBytes!
-                                            : null,
-                                      ),
-                                    ),
-                                  );
-                                },
+                                loadingBuilder:
+                                    (context, child, loadingProgress) {
+                                      if (loadingProgress == null) return child;
+                                      return Container(
+                                        color: Colors.grey[300],
+                                        child: Center(
+                                          child: CircularProgressIndicator(
+                                            value:
+                                                loadingProgress
+                                                        .expectedTotalBytes !=
+                                                    null
+                                                ? loadingProgress
+                                                          .cumulativeBytesLoaded /
+                                                      loadingProgress
+                                                          .expectedTotalBytes!
+                                                : null,
+                                          ),
+                                        ),
+                                      );
+                                    },
                               )
                             : Container(
                                 color: Colors.grey[300],
@@ -147,7 +153,7 @@ class _MenuBannerSectionState extends State<MenuBannerSection> {
                                   color: Colors.grey[600],
                                 ),
                               ),
-                        
+
                         // Gradient Overlay
                         Container(
                           decoration: BoxDecoration(
@@ -162,9 +168,10 @@ class _MenuBannerSectionState extends State<MenuBannerSection> {
                             ),
                           ),
                         ),
-                        
+
                         // Content Overlay
-                        if (banner.title.isNotEmpty || banner.subtitle.isNotEmpty)
+                        if (banner.title.isNotEmpty ||
+                            banner.subtitle.isNotEmpty)
                           Positioned(
                             left: 16,
                             right: 16,
@@ -217,7 +224,7 @@ class _MenuBannerSectionState extends State<MenuBannerSection> {
             ),
           ),
         ),
-        
+
         // Page Indicator
         if (widget.banners.length > 1)
           Container(
