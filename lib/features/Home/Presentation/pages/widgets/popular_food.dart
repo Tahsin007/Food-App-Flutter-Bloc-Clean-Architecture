@@ -1,0 +1,68 @@
+import 'package:flutter/material.dart';
+import 'package:stack_food/features/Home/Presentation/pages/widgets/foodcard.dart';
+import 'package:stack_food/features/Home/Presentation/pages/widgets/section_header.dart';
+
+class PopularFoodSection extends StatefulWidget {
+  const PopularFoodSection({super.key});
+
+  @override
+  State<PopularFoodSection> createState() => _PopularFoodSectionState();
+}
+
+class _PopularFoodSectionState extends State<PopularFoodSection> {
+  final List<FoodItem> popularFoods = [
+    FoodItem(
+      name: 'Fried Noodles',
+      price: 7.50,
+      rating: 4.5,
+      image: 'assets/noodles.jpg',
+    ),
+    FoodItem(
+      name: 'Fried Noodles',
+      price: 7.50,
+      rating: 4.5,
+      image: 'assets/noodles.jpg',
+    ),
+    FoodItem(
+      name: 'Fried Rice',
+      price: 8.00,
+      rating: 4.3,
+      image: 'assets/rice.jpg',
+    ),
+  ];
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SectionHeader(title: 'Popular Food Nearby'),
+        Container(
+          height: 200,
+          child: ListView.builder(
+            // padding: EdgeInsets.symmetric(horizontal: 16),
+            scrollDirection: Axis.horizontal,
+            itemCount: popularFoods.length,
+            itemBuilder: (context, index) {
+              return FoodCard(food: popularFoods[index]);
+            },
+          ),
+        ),
+      ],
+    );
+    ;
+  }
+}
+
+class FoodItem {
+  final String name;
+  final double price;
+  final double rating;
+  final String image;
+
+  FoodItem({
+    required this.name,
+    required this.price,
+    required this.rating,
+    required this.image,
+  });
+}
