@@ -5,6 +5,7 @@ import 'package:stack_food/features/Home/Presentation/pages/widgets/banner_secti
 import 'package:stack_food/features/Home/Presentation/pages/widgets/bottom_nav.dart';
 import 'package:stack_food/features/Home/Presentation/pages/widgets/categories_section.dart';
 import 'package:stack_food/features/Home/Presentation/pages/widgets/food_campaign_section.dart';
+import 'package:stack_food/features/Home/Presentation/pages/widgets/menu_banner.dart';
 import 'package:stack_food/features/Home/Presentation/pages/widgets/popular_food.dart';
 import 'package:stack_food/features/Home/Presentation/pages/widgets/restaurent_section.dart';
 
@@ -29,7 +30,7 @@ class _StackFoodHomeState extends State<StackFoodHome> {
             children: [
               AppSearchBar(hintText: "Search food or restaurant here..."),
               SizedBox(height: 20),
-              BannerSection(),
+              MenuBannerSection(),
               SizedBox(height: 20),
               CategoriesSection(),
               SizedBox(height: 20),

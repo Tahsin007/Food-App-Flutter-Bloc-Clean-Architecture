@@ -1,5 +1,31 @@
 import 'package:stack_food/features/Home/Domain/entities/banner_entity.dart';
 
+class BannerResponse {
+  List<Null>? campaigns;
+  List<BannerModel>? banners;
+
+  BannerResponse({this.campaigns, this.banners});
+
+  // factory BannerResponse.fromJson(List<dynamic> json) {
+  //   List<BannerModel> banners = json.map((item) => BannerModel.fromJson(item)).toList();
+  //   return BannerResponse(banners: banners);
+  // }
+    BannerResponse.fromJson(Map<String, dynamic> json) {
+    if (json['campaigns'] != null) {
+      campaigns = <Null>[];
+      json['campaigns'].forEach((v) {
+        campaigns!.add(null);
+      });
+    }
+    if (json['banners'] != null) {
+      banners = <BannerModel>[];
+      json['banners'].forEach((v) {
+        banners!.add( BannerModel.fromJson(v));
+      });
+    }
+  }
+}
+
 class BannerModel extends BannerEntity {
   BannerModel({
     required super.id,
