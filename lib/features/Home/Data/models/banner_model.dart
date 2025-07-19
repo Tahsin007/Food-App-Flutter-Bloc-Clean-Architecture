@@ -5,11 +5,6 @@ class BannerResponse {
   List<BannerModel>? banners;
 
   BannerResponse({this.campaigns, this.banners});
-
-  // factory BannerResponse.fromJson(List<dynamic> json) {
-  //   List<BannerModel> banners = json.map((item) => BannerModel.fromJson(item)).toList();
-  //   return BannerResponse(banners: banners);
-  // }
     BannerResponse.fromJson(Map<String, dynamic> json) {
     if (json['campaigns'] != null) {
       campaigns = <Null>[];

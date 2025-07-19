@@ -1,6 +1,9 @@
+import 'package:fpdart/src/either.dart';
+import 'package:stack_food/core/error/failure.dart';
 import 'package:stack_food/features/Home/Data/datasources/home_remote_data_source.dart';
 import 'package:stack_food/features/Home/Domain/entities/banner_entity.dart';
-import 'package:stack_food/features/Home/Domain/repositories/banner_repository.dart';
+import 'package:stack_food/features/Home/Domain/entities/category_entity.dart';
+import 'package:stack_food/features/Home/Domain/repositories/home_repository.dart';
 
 class HomeRepositoryImpl implements HomeRepository {
   final HomeRemoteDataSource remoteDataSource;
@@ -8,7 +11,22 @@ class HomeRepositoryImpl implements HomeRepository {
   HomeRepositoryImpl({required this.remoteDataSource});
 
   @override
-  Future<List<BannerEntity>> getBanners() async {
-    return await remoteDataSource.getBanners();
+  Future<Either<Failure, List<BannerEntity>>> getBanners() async {
+    try {
+      final banners = await remoteDataSource.getBanners();
+      return Right(banners);
+    } catch (e) {
+      return Left(Failure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<CategoryEntity>>> getCategories() async {
+    try {
+      final categories = await remoteDataSource.getCategories();
+      return Right(categories);
+    } catch (e) {
+      return Left(Failure(e.toString()));
+    }
   }
 }

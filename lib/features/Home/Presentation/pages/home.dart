@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:stack_food/core/theme/app_pallete.dart';
+import 'package:stack_food/features/Home/Presentation/bloc/home_bloc.dart';
+import 'package:stack_food/features/Home/Presentation/bloc/home_event.dart';
+import 'package:stack_food/features/Home/Presentation/bloc/home_state.dart';
 import 'package:stack_food/features/Home/Presentation/pages/widgets/app_search_bar.dart';
-import 'package:stack_food/features/Home/Presentation/pages/widgets/banner_section.dart';
 import 'package:stack_food/features/Home/Presentation/pages/widgets/bottom_nav.dart';
 import 'package:stack_food/features/Home/Presentation/pages/widgets/categories_section.dart';
 import 'package:stack_food/features/Home/Presentation/pages/widgets/food_campaign_section.dart';
@@ -18,30 +21,41 @@ class StackFoodHome extends StatefulWidget {
 
 class _StackFoodHomeState extends State<StackFoodHome> {
   @override
+  void initState() {
+    super.initState();
+    context.read<HomeBloc>().add(FetchBanners());
+    context.read<HomeBloc>().add(FetchCategories());
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppPallete.lightGray,
       appBar: _buildAppBar(),
       bottomNavigationBar: const AppBottomNav(),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              AppSearchBar(hintText: "Search food or restaurant here..."),
-              SizedBox(height: 20),
-              MenuBannerSection(),
-              SizedBox(height: 20),
-              CategoriesSection(),
-              SizedBox(height: 20),
-              PopularFoodSection(),
-              SizedBox(height: 30),
-              FoodCampaignSection(),
-              SizedBox(height: 20),
-              RestaurentSection(),
-            ],
-          ),
-        ),
+      body: BlocBuilder<HomeBloc, HomeState>(
+        builder: (context, state) {
+          return Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  AppSearchBar(hintText: "Search food or restaurant here..."),
+                  SizedBox(height: 20),
+                  MenuBannerSection(),
+                  SizedBox(height: 20),
+                  CategoriesSection(),
+                  SizedBox(height: 20),
+                  PopularFoodSection(),
+                  SizedBox(height: 30),
+                  FoodCampaignSection(),
+                  SizedBox(height: 20),
+                  RestaurentSection(),
+                ],
+              ),
+            ),
+          );
+        },
       ),
     );
   }

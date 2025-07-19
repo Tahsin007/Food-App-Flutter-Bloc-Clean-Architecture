@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:stack_food/features/Home/Presentation/pages/widgets/categories_section.dart';
 
 class CategoryCard extends StatelessWidget {
-  final CategoryItem category;
+  String? name;
+  String? imageUrl;
 
-  const CategoryCard({Key? key, required this.category}) : super(key: key);
+  CategoryCard({Key? key, this.name, this.imageUrl}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -13,22 +14,15 @@ class CategoryCard extends StatelessWidget {
       margin: EdgeInsets.only(right: 16),
       child: Column(
         children: [
-          Container(
-            width: 60,
-            height: 60,
-            decoration: BoxDecoration(
-              color: category.color.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Icon(
-              category.icon,
-              color: category.color,
-              size: 30,
-            ),
+          Image.network(
+            imageUrl ?? 'https://via.placeholder.com/70',
+            width: 70,
+            height: 70,
+            fit: BoxFit.cover,
           ),
           SizedBox(height: 8),
           Text(
-            category.name,
+            name ?? 'Unknown',
             style: TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w500,

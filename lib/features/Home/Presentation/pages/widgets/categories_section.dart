@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:stack_food/features/Home/Presentation/bloc/home_bloc.dart';
+import 'package:stack_food/features/Home/Presentation/bloc/home_state.dart';
 import 'package:stack_food/features/Home/Presentation/pages/widgets/category_card.dart';
 import 'package:stack_food/features/Home/Presentation/pages/widgets/section_header.dart';
 
@@ -10,31 +13,43 @@ class CategoriesSection extends StatefulWidget {
 }
 
 class _CategoriesSectionState extends State<CategoriesSection> {
-  final List<CategoryItem> categories = [
-    CategoryItem('All', Icons.apps, Colors.orange),
-    CategoryItem('Coffee', Icons.coffee, Colors.brown),
-    CategoryItem('Drink', Icons.local_drink, Colors.blue),
-    CategoryItem('Fast Food', Icons.fastfood, Colors.red),
-    CategoryItem('Cake', Icons.cake, Colors.pink),
-    CategoryItem('Sushi', Icons.restaurant, Colors.green),
-  ];
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SectionHeader(title: "Popular Food Nearby"),
-        Container(
-          height: 100,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemCount: categories.length,
-            itemBuilder: (context, index) {
-              return CategoryCard(category: categories[index]);
-            },
-          ),
-        ),
-      ],
+    return BlocBuilder<HomeBloc, HomeState>(
+      builder: (context, state) {
+        if (state.isLoadingCategories) {
+          return Center(child: CircularProgressIndicator());
+        } else if (state.error != null) {
+          return Center(child: Text('Error: ${state.error}'));
+        } else if (state.categories != null && state.categories!.isNotEmpty) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SectionHeader(title: "Popular Food Nearby"),
+              Container(
+                height: 100,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: state.categories!.length,
+                  itemBuilder: (context, index) {
+                    return CategoryCard(
+                      name: state.categories![index].title,
+                      imageUrl: state.categories![index].imageFullUrl,
+                    );
+                  },
+                ),
+              ),
+            ],
+          );
+        } else {
+          return Text("No categories Available");
+        }
+      },
     );
   }
 }

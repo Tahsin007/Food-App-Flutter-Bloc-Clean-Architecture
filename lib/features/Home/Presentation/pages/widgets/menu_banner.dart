@@ -3,9 +3,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:stack_food/core/theme/app_pallete.dart';
-import 'package:stack_food/features/Home/Presentation/bloc/banner_bloc.dart';
-import 'package:stack_food/features/Home/Presentation/bloc/banner_event.dart';
-import 'package:stack_food/features/Home/Presentation/bloc/banner_state.dart';
+import 'package:stack_food/features/Home/Presentation/bloc/home_bloc.dart';
+import 'package:stack_food/features/Home/Presentation/bloc/home_event.dart';
+import 'package:stack_food/features/Home/Presentation/bloc/home_state.dart';
 
 class MenuBannerSection extends StatefulWidget {
   final bool autoPlay;
@@ -29,7 +29,6 @@ class _MenuBannerSectionState extends State<MenuBannerSection> {
   @override
   void initState() {
     super.initState();
-    context.read<BannerBloc>().add(FetchBanners());
     _pageController = PageController();
 
     // Autoplay will be started after banners are loaded in BlocBuilder
@@ -72,18 +71,19 @@ class _MenuBannerSectionState extends State<MenuBannerSection> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<BannerBloc, BannerState>(
+    
+    return BlocBuilder<HomeBloc, HomeState>(
       builder: (context, state) {
-        if (state is BannerLoading) {
+        if (state.isLoadingCategories) {
           return const Center(child: CircularProgressIndicator());
-        } else if (state is BannerError) {
-          return Center(child: Text(state.message));
+        } else if (state.error != null) {
+          return Center(child: Text(state.error!));
         }
-        if (state is BannerLoaded) {
+        if (state.banners != null && state.banners!.isNotEmpty) {
           if (widget.autoPlay &&
-              state.banners.isNotEmpty &&
+              state.banners!.isNotEmpty &&
               _autoPlayTimer == null) {
-            _startAutoPlay(state.banners);
+            _startAutoPlay(state.banners!);
           }
           return Column(
             children: [
@@ -91,7 +91,7 @@ class _MenuBannerSectionState extends State<MenuBannerSection> {
                 // margin: EdgeInsets.symmetric(horizontal: 16),
                 child: GestureDetector(
                   onPanStart: (_) => _stopAutoPlay(),
-                  onPanEnd: (_) => _resumeAutoPlay(state.banners),
+                  onPanEnd: (_) => _resumeAutoPlay(state.banners!),
                   child: Container(
                     height: 150,
                     child: PageView.builder(
@@ -101,9 +101,9 @@ class _MenuBannerSectionState extends State<MenuBannerSection> {
                           _currentIndex = index;
                         });
                       },
-                      itemCount: state.banners.length,
+                      itemCount: state.banners!.length,
                       itemBuilder: (context, index) {
-                        final banner = state.banners[index];
+                        final banner = state.banners![index];
                         return Container(
                           margin: EdgeInsets.only(right: 8),
                           decoration: BoxDecoration(
@@ -192,13 +192,13 @@ class _MenuBannerSectionState extends State<MenuBannerSection> {
               ),
 
               // Page Indicator
-              if (state.banners.length > 1)
+              if (state.banners!.length > 1)
                 Container(
                   margin: EdgeInsets.only(top: 12),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: List.generate(
-                      state.banners.length,
+                      state.banners!.length,
                       (index) => Container(
                         width: 8,
                         height: 8,
