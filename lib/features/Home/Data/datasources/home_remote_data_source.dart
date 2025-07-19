@@ -5,12 +5,14 @@ import 'package:stack_food/features/Home/Data/models/banner_model.dart';
 import 'package:stack_food/features/Home/Data/models/category_model.dart';
 import 'package:stack_food/features/Home/Data/models/food_campaign_model.dart';
 import 'package:stack_food/features/Home/Data/models/popular_product_model.dart';
+import 'package:stack_food/features/Home/Data/models/restaurent_model.dart';
 
 abstract class HomeRemoteDataSource {
   Future<List<BannerModel>> getBanners();
   Future<List<CategoryModel>> getCategories();
   Future<List<PopularProductModel>> getPopularProducts();
   Future<List<FoodCampaignModel>> getFoodcampaigns();
+  Future<List<RestaurentModel>> getRestaurents();
 }
 
 class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
@@ -123,7 +125,7 @@ class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
         final campaignResponse = data
             .map((food) => FoodCampaignModel.fromJson(food))
             .toList();
-            
+
         return campaignResponse;
 
       } else {
@@ -133,6 +135,31 @@ class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
     } catch (e) {
       print("Exception in getFoodCampaigns: $e");
       throw Exception('Failed to load food campaigns');
+    }
+  }
+  
+  @override
+  Future<List<RestaurentModel>> getRestaurents() async {
+    try {
+      final response = await client.get(
+        Uri.parse('${ApiConstants.apiUrl!}/api/v1/restaurants/get-restaurants/all?offset=1&limit=10'),
+        headers: {
+          'Content-Type': ApiConstants.contentType,
+          'zoneId': ApiConstants.zoneId,
+          'latitude': ApiConstants.latitude,
+          'longitude': ApiConstants.longitude,
+        },
+      );
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> data = json.decode(response.body);
+        final restaurentResponse = RestaurentResponse.fromJson(data);
+        print("Restaurent Data: ${response.statusCode}");
+        return restaurentResponse.restaurants;
+      } else {
+        throw Exception('Failed to load restaurants');
+      }
+    } catch (error) {
+      throw Exception('Failed to load restaurants: $error');
     }
   }
 }

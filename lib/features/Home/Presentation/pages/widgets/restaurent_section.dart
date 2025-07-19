@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:stack_food/features/Home/Presentation/bloc/home_bloc.dart';
+import 'package:stack_food/features/Home/Presentation/bloc/home_event.dart';
+import 'package:stack_food/features/Home/Presentation/bloc/home_state.dart';
 import 'package:stack_food/features/Home/Presentation/pages/widgets/restaurent_card.dart';
 import 'package:stack_food/features/Home/Presentation/pages/widgets/section_header.dart';
 
@@ -10,6 +14,13 @@ class RestaurentSection extends StatefulWidget {
 }
 
 class _RestaurentSectionState extends State<RestaurentSection> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    context.read<HomeBloc>().add(FetchRestaurents());
+  }
+
   final List<RestaurantItem> restaurants = [
     RestaurantItem(
       name: 'Pizza Palace',
@@ -28,20 +39,32 @@ class _RestaurentSectionState extends State<RestaurentSection> {
   ];
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SectionHeader(title: 'Restaurants'),
-        ListView.builder(
-          // padding: EdgeInsets.symmetric(horizontal: 16),
-          shrinkWrap: true,
-          physics: NeverScrollableScrollPhysics(),
-          itemCount: restaurants.length,
-          itemBuilder: (context, index) {
-            return RestaurantCard(restaurant: restaurants[index]);
-          },
-        ),
-      ],
+    return BlocBuilder<HomeBloc, HomeState>(
+      
+      builder: (context, state) {
+        if (state.isLoadingRestaurents) {
+          return Center(child: CircularProgressIndicator());
+        } else if (state.error != null) {
+          return Center(child: Text('Error: ${state.error}'));
+        } else if (state.restaurents == null) {
+          return Center(child: Text("No restaurants available"));
+        }
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SectionHeader(title: 'Restaurants'),
+            ListView.builder(
+              // padding: EdgeInsets.symmetric(horizontal: 16),
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
+              itemCount: state.restaurents!.length,
+              itemBuilder: (context, index) {
+                return RestaurantCard(restaurant: state.restaurents![index]);
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }

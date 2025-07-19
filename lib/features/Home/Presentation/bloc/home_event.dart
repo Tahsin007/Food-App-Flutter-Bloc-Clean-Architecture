@@ -7,3 +7,5 @@ class FetchCategories extends HomeEvent {}
 class FetchPopularProducts extends HomeEvent{}
 
 class FetchFoodCampaigns extends HomeEvent {}
+
+class FetchRestaurents extends HomeEvent {}

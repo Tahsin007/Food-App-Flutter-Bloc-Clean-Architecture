@@ -3,6 +3,7 @@ import 'package:stack_food/features/Home/Domain/usecases/get_banners.dart';
 import 'package:stack_food/features/Home/Domain/usecases/get_categories.dart';
 import 'package:stack_food/features/Home/Domain/usecases/get_food_campaigns.dart';
 import 'package:stack_food/features/Home/Domain/usecases/get_popular_products.dart';
+import 'package:stack_food/features/Home/Domain/usecases/get_restaurents.dart';
 import 'package:stack_food/features/Home/Presentation/bloc/home_event.dart';
 import 'package:stack_food/features/Home/Presentation/bloc/home_state.dart';
 
@@ -11,13 +12,15 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   final GetCategoriesUseCase categoriesUseCase;
   final GetPopularProductsUseCase getPopularProductsUseCase;
   final GetFoodCampaignsUseCase getFoodCampaignsUseCase;
+  final GetRestaurentsUseCase getRestaurentsUseCase;
 
-  HomeBloc(this.getBanners, this.categoriesUseCase,this.getPopularProductsUseCase,this.getFoodCampaignsUseCase)
+  HomeBloc(this.getBanners, this.categoriesUseCase,this.getPopularProductsUseCase,this.getFoodCampaignsUseCase,this.getRestaurentsUseCase)
       : super(HomeState.initial()) {
     on<FetchBanners>(_onFetchBanners);
     on<FetchCategories>(_onFetchCategories);
     on<FetchPopularProducts>(_onFecthPropularProducts);
     on<FetchFoodCampaigns>(_onFetchFoodCampaigns);
+    on<FetchRestaurents>(_onFetchRestaurents);
   }
 
   Future<void> _onFetchBanners(FetchBanners event, Emitter<HomeState> emit) async {
@@ -61,6 +64,17 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     result.fold(
       (failure) => emit(state.copyWith(isLoadingFoodCampaigns: false, error: failure.message)),
       (foodCampaigns) => emit(state.copyWith(isLoadingFoodCampaigns: false, foodCampaigns: foodCampaigns)),
+    );
+  }
+
+  Future<void> _onFetchRestaurents(FetchRestaurents event, Emitter<HomeState> emit) async {
+    emit(state.copyWith(isLoadingRestaurents: true, error: null));
+
+    final result = await getRestaurentsUseCase(NoParams());
+
+    result.fold(
+      (failure) => emit(state.copyWith(isLoadingRestaurents: false, error: failure.message)),
+      (restaurents) => emit(state.copyWith(isLoadingRestaurents: false, restaurents: restaurents)),
     );
   }
 }
