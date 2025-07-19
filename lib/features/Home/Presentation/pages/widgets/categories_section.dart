@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:stack_food/features/Home/Presentation/bloc/home_bloc.dart';
 import 'package:stack_food/features/Home/Presentation/bloc/home_event.dart';
 import 'package:stack_food/features/Home/Presentation/bloc/home_state.dart';
+import 'package:stack_food/features/Home/Presentation/pages/categories_view_all.dart';
 import 'package:stack_food/features/Home/Presentation/pages/widgets/category_card.dart';
 import 'package:stack_food/features/Home/Presentation/pages/widgets/section_header.dart';
 
@@ -32,7 +33,14 @@ class _CategoriesSectionState extends State<CategoriesSection> {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SectionHeader(title: "Popular Food Nearby"),
+              SectionHeader(title: "Categories",onTextBtnPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => CategoriesViewAll(),
+                  ),
+                );
+              },),
               Container(
                 height: 100,
                 child: ListView.builder(

@@ -4,8 +4,8 @@ import 'package:stack_food/core/theme/app_text_styles.dart';
 
 class SectionHeader extends StatelessWidget {
   final String title;
-  VoidCallback? onTextBtnPressed;
-  SectionHeader({super.key, required this.title});
+  final VoidCallback? onTextBtnPressed;
+  SectionHeader({super.key, required this.title,this.onTextBtnPressed});
 
   @override
   Widget build(BuildContext context) {
