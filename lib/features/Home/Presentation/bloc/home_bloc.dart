@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:stack_food/features/Home/Domain/usecases/get_banners.dart';
 import 'package:stack_food/features/Home/Domain/usecases/get_categories.dart';
+import 'package:stack_food/features/Home/Domain/usecases/get_food_campaigns.dart';
 import 'package:stack_food/features/Home/Domain/usecases/get_popular_products.dart';
 import 'package:stack_food/features/Home/Presentation/bloc/home_event.dart';
 import 'package:stack_food/features/Home/Presentation/bloc/home_state.dart';
@@ -9,12 +10,14 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   final GetBannersUseCase getBanners;
   final GetCategoriesUseCase categoriesUseCase;
   final GetPopularProductsUseCase getPopularProductsUseCase;
+  final GetFoodCampaignsUseCase getFoodCampaignsUseCase;
 
-  HomeBloc(this.getBanners, this.categoriesUseCase,this.getPopularProductsUseCase)
+  HomeBloc(this.getBanners, this.categoriesUseCase,this.getPopularProductsUseCase,this.getFoodCampaignsUseCase)
       : super(HomeState.initial()) {
     on<FetchBanners>(_onFetchBanners);
     on<FetchCategories>(_onFetchCategories);
     on<FetchPopularProducts>(_onFecthPropularProducts);
+    on<FetchFoodCampaigns>(_onFetchFoodCampaigns);
   }
 
   Future<void> _onFetchBanners(FetchBanners event, Emitter<HomeState> emit) async {
@@ -47,6 +50,17 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     result.fold(
       (failure) => emit(state.copyWith(isLoadingPopularProducts: false, error: failure.message)),
       (products) => emit(state.copyWith(isLoadingPopularProducts: false, products: products)),
+    );
+  }
+
+  Future<void> _onFetchFoodCampaigns(FetchFoodCampaigns event, Emitter<HomeState> emit) async {
+    emit(state.copyWith(isLoadingFoodCampaigns: true, error: null));
+
+    final result = await getFoodCampaignsUseCase(NoParams());
+
+    result.fold(
+      (failure) => emit(state.copyWith(isLoadingFoodCampaigns: false, error: failure.message)),
+      (foodCampaigns) => emit(state.copyWith(isLoadingFoodCampaigns: false, foodCampaigns: foodCampaigns)),
     );
   }
 }

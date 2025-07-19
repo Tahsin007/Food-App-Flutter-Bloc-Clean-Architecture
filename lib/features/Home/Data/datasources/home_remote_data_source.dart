@@ -3,12 +3,14 @@ import 'package:http/http.dart' as http;
 import 'package:stack_food/core/constants/api_constants.dart';
 import 'package:stack_food/features/Home/Data/models/banner_model.dart';
 import 'package:stack_food/features/Home/Data/models/category_model.dart';
+import 'package:stack_food/features/Home/Data/models/food_campaign_model.dart';
 import 'package:stack_food/features/Home/Data/models/popular_product_model.dart';
 
 abstract class HomeRemoteDataSource {
   Future<List<BannerModel>> getBanners();
   Future<List<CategoryModel>> getCategories();
   Future<List<PopularProductModel>> getPopularProducts();
+  Future<List<FoodCampaignModel>> getFoodcampaigns();
 }
 
 class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
@@ -100,6 +102,37 @@ class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
     } catch (e) {
       print("Exception in getPopularProducts: $e");
       throw Exception('Failed to load popular products');
+    }
+  }
+  
+  @override
+  Future<List<FoodCampaignModel>> getFoodcampaigns() async {
+    try {
+      final response = await client.get(
+        Uri.parse('${ApiConstants.apiUrl!}/api/v1/campaigns/item'),
+        headers: {
+          'Content-Type': ApiConstants.contentType,
+          'zoneId': ApiConstants.zoneId,
+          'latitude': ApiConstants.latitude,
+          'longitude': ApiConstants.longitude,
+        },
+      );
+      if (response.statusCode == 200) {
+        print("Food Campaign Data: ${response.statusCode}");
+        final List<dynamic> data = json.decode(response.body);
+        final campaignResponse = data
+            .map((food) => FoodCampaignModel.fromJson(food))
+            .toList();
+            
+        return campaignResponse;
+
+      } else {
+        print("Error fetching campaign products: ${response.statusCode}");
+        throw Exception('Failed to load campaign products');
+      }
+    } catch (e) {
+      print("Exception in getFoodCampaigns: $e");
+      throw Exception('Failed to load food campaigns');
     }
   }
 }

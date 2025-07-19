@@ -18,7 +18,7 @@ class FoodCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: AppPallete.darkGray.withValues(alpha: 0.1),
+            color: AppPallete.darkGray.withOpacity(0.1),
             spreadRadius: 1,
             blurRadius: 5,
           ),
@@ -27,20 +27,26 @@ class FoodCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Image.network(
-            food.imageUrl,
-            height: 100,
-            width: 150,
-            fit: BoxFit.cover,
+          ClipRRect(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
+            child: Image.network(
+              food.imageUrl,
+              height: 100,
+              width: 150,
+              fit: BoxFit.cover,
+            ),
           ),
           Padding(
             padding: EdgeInsets.all(12),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min, // Prevents overflow
               children: [
                 Text(
                   food.name,
                   style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
                 SizedBox(height: 4),
                 Text(
@@ -57,7 +63,7 @@ class FoodCard extends StatelessWidget {
                     Icon(Icons.star, color: Colors.amber, size: 16),
                     SizedBox(width: 4),
                     Text(
-                      food.avgRating.toString(),
+                      food.avgRating.toStringAsFixed(2),
                       style: TextStyle(fontSize: 12),
                     ),
                   ],
@@ -70,3 +76,4 @@ class FoodCard extends StatelessWidget {
     );
   }
 }
+

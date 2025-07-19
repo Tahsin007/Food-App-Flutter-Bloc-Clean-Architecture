@@ -31,9 +31,9 @@ class PopularProductModel extends ProductEntity {
       name: json['name'],
       description: json['description'],
       imageUrl: json['image_full_url'],
-      avgRating: (json['avg_rating'] is int)
-          ? (json['avg_rating'] as int).toDouble()
-          : (json['avg_rating'] as double),
+      avgRating: json['avg_rating'] is double
+          ? (json['avg_rating'] as double)
+          : (json['avg_rating'] as int).toDouble(),
       price: json['price'],
     );
   }

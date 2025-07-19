@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:stack_food/core/theme/app_pallete.dart';
+import 'package:stack_food/features/Home/Domain/entities/food_campaign_entity.dart';
 
 class CampaignCard extends StatelessWidget {
-  final CampaignItem campaign;
+  final FoodCampaignEntity campaign;
 
   const CampaignCard({Key? key, required this.campaign}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 160,
+      width: 180,
       margin: EdgeInsets.only(right: 10),
       decoration: BoxDecoration(
         color: AppPallete.white,
@@ -25,14 +26,16 @@ class CampaignCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            height: 120,
-            decoration: BoxDecoration(
-              color: AppPallete.lightGray,
-              borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
+          ClipRRect(
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(12),
+              topRight: Radius.circular(12),
             ),
-            child: Center(
-              child: Icon(Icons.fastfood, size: 50, color: AppPallete.darkGray),
+            child: Image.network(
+              campaign.imageUrl,
+              height: 120,
+              width: double.infinity,
+              fit: BoxFit.cover,
             ),
           ),
           Padding(
@@ -48,7 +51,7 @@ class CampaignCard extends StatelessWidget {
                 Row(
                   children: [
                     Text(
-                      '\$${campaign.discountedPrice.toStringAsFixed(2)}',
+                      '\$${calculateDiscountedPrice(campaign.price, campaign.discount,campaign.discountType).toStringAsFixed(2)}',
                       style: TextStyle(
                         color: AppPallete.primaryColor,
                         fontWeight: FontWeight.bold,
@@ -57,7 +60,7 @@ class CampaignCard extends StatelessWidget {
                     ),
                     SizedBox(width: 8),
                     Text(
-                      '\$${campaign.originalPrice.toStringAsFixed(2)}',
+                      '\$${campaign.price.toStringAsFixed(2)}',
                       style: TextStyle(
                         color: Colors.grey,
                         fontSize: 12,
@@ -72,7 +75,7 @@ class CampaignCard extends StatelessWidget {
                     Icon(Icons.star, color: Colors.amber, size: 16),
                     SizedBox(width: 4),
                     Text(
-                      campaign.rating.toString(),
+                      campaign.avgRating.toStringAsFixed(2),
                       style: TextStyle(fontSize: 12),
                     ),
                     Spacer(),
@@ -96,18 +99,10 @@ class CampaignCard extends StatelessWidget {
   }
 }
 
-class CampaignItem {
-  final String name;
-  final double originalPrice;
-  final double discountedPrice;
-  final double rating;
-  final String image;
-
-  CampaignItem({
-    required this.name,
-    required this.originalPrice,
-    required this.discountedPrice,
-    required this.rating,
-    required this.image,
-  });
+double calculateDiscountedPrice(int actualPrice, int discountPercent, String discountType) {
+  if (discountType == 'percentage') {
+    return actualPrice - (actualPrice * discountPercent / 100);
+  } else {
+    return (actualPrice - discountPercent).toDouble();
+  }
 }
