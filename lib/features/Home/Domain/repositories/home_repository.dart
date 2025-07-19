@@ -11,5 +11,5 @@ abstract interface class HomeRepository {
   Future<Either<Failure, List<CategoryEntity>>> getCategories();
   Future<Either<Failure, List<ProductEntity>>> getPopularProducts();
   Future<Either<Failure, List<FoodCampaignEntity>>> getFoodCampaigns();
-  Future<Either<Failure, List<RestaurentEntity>>> getRestaurents();
+  Future<Either<Failure, List<RestaurentEntity>>> getRestaurents({required int offset, required int limit});
 }

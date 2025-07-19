@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:stack_food/core/theme/app_pallete.dart';
 import 'package:stack_food/features/Home/Domain/entities/product_entity.dart';
-import 'package:stack_food/features/Home/Presentation/pages/widgets/popular_food.dart';
+
 
 class FoodCard extends StatelessWidget {
   final ProductEntity food;
 
-  const FoodCard({Key? key, required this.food}) : super(key: key);
+  const FoodCard({super.key, required this.food});
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +18,7 @@ class FoodCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: AppPallete.darkGray.withOpacity(0.1),
+            color: AppPallete.darkGray.withAlpha(25),
             spreadRadius: 1,
             blurRadius: 5,
           ),

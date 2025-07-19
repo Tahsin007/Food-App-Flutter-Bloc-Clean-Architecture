@@ -14,33 +14,45 @@ class RestaurentSection extends StatefulWidget {
 }
 
 class _RestaurentSectionState extends State<RestaurentSection> {
+  final _scrollController = ScrollController();
+
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    context.read<HomeBloc>().add(FetchRestaurents());
+    context.read<HomeBloc>().add(FetchRestaurents(offset: 1, limit: 10));
+    _scrollController.addListener(_onScroll);
   }
 
-  final List<RestaurantItem> restaurants = [
-    RestaurantItem(
-      name: 'Pizza Palace',
-      rating: 4.5,
-      deliveryTime: '30-45 min',
-      deliveryFee: 2.99,
-      image: 'assets/restaurant1.jpg',
-    ),
-    RestaurantItem(
-      name: 'Burger House',
-      rating: 4.2,
-      deliveryTime: '25-35 min',
-      deliveryFee: 1.99,
-      image: 'assets/restaurant2.jpg',
-    ),
-  ];
+  void _onScroll() {
+    if (_isBottom && !context.read<HomeBloc>().state.isLoadingRestaurents) {
+      final state = context.read<HomeBloc>().state;
+      if (state.restaurents != null) {
+        context.read<HomeBloc>().add(
+          FetchRestaurents(
+            offset: state.restaurents!.length ~/ 10 + 1,
+            limit: 10,
+          ),
+        );
+      }
+    }
+  }
+
+  bool get _isBottom {
+    if (!_scrollController.hasClients) return false;
+    final maxScroll = _scrollController.position.maxScrollExtent;
+    final currentScroll = _scrollController.offset;
+    return currentScroll >= (maxScroll * 0.9);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<HomeBloc, HomeState>(
-      
       builder: (context, state) {
         if (state.isLoadingRestaurents) {
           return Center(child: CircularProgressIndicator());
@@ -53,14 +65,23 @@ class _RestaurentSectionState extends State<RestaurentSection> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SectionHeader(title: 'Restaurants'),
-            ListView.builder(
-              // padding: EdgeInsets.symmetric(horizontal: 16),
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              itemCount: state.restaurents!.length,
-              itemBuilder: (context, index) {
-                return RestaurantCard(restaurant: state.restaurents![index]);
-              },
+            SizedBox(
+              height: 400,
+              child: ListView.builder(
+                controller: _scrollController,
+                physics: const BouncingScrollPhysics(),
+                itemCount: state.restaurents == null
+                    ? 0
+                    : state.hasReachedMax
+                    ? state.restaurents!.length
+                    : state.restaurents!.length + 1,
+                itemBuilder: (context, index) {
+                  if (index >= state.restaurents!.length) {
+                    return Center(child: CircularProgressIndicator());
+                  }
+                  return RestaurantCard(restaurant: state.restaurents![index]);
+                },
+              ),
             ),
           ],
         );

@@ -12,7 +12,7 @@ abstract class HomeRemoteDataSource {
   Future<List<CategoryModel>> getCategories();
   Future<List<PopularProductModel>> getPopularProducts();
   Future<List<FoodCampaignModel>> getFoodcampaigns();
-  Future<List<RestaurentModel>> getRestaurents();
+  Future<List<RestaurentModel>> getRestaurents({required int offset, required int limit});
 }
 
 class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
@@ -94,15 +94,15 @@ class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = json.decode(response.body);
         final productResponse = PopularProductsResponse.fromJson(data);
-        print("Popular Product Data: ${response.statusCode}");
+        
         return productResponse.products!;
 
       } else {
-        print("Error fetching popular products: ${response.statusCode}");
+        
         throw Exception('Failed to load propular products');
       }
     } catch (e) {
-      print("Exception in getPopularProducts: $e");
+      
       throw Exception('Failed to load popular products');
     }
   }
@@ -120,7 +120,7 @@ class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
         },
       );
       if (response.statusCode == 200) {
-        print("Food Campaign Data: ${response.statusCode}");
+        
         final List<dynamic> data = json.decode(response.body);
         final campaignResponse = data
             .map((food) => FoodCampaignModel.fromJson(food))
@@ -129,20 +129,20 @@ class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
         return campaignResponse;
 
       } else {
-        print("Error fetching campaign products: ${response.statusCode}");
+        
         throw Exception('Failed to load campaign products');
       }
     } catch (e) {
-      print("Exception in getFoodCampaigns: $e");
+      
       throw Exception('Failed to load food campaigns');
     }
   }
   
   @override
-  Future<List<RestaurentModel>> getRestaurents() async {
+  Future<List<RestaurentModel>> getRestaurents({required int offset, required int limit}) async {
     try {
       final response = await client.get(
-        Uri.parse('${ApiConstants.apiUrl!}/api/v1/restaurants/get-restaurants/all?offset=1&limit=10'),
+        Uri.parse('${ApiConstants.apiUrl!}/api/v1/restaurants/get-restaurants/all?offset=$offset&limit=$limit'),
         headers: {
           'Content-Type': ApiConstants.contentType,
           'zoneId': ApiConstants.zoneId,
@@ -153,7 +153,7 @@ class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = json.decode(response.body);
         final restaurentResponse = RestaurentResponse.fromJson(data);
-        print("Restaurent Data: ${response.statusCode}");
+        
         return restaurentResponse.restaurants;
       } else {
         throw Exception('Failed to load restaurants');

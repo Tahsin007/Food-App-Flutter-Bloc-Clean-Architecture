@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:stack_food/features/Home/Presentation/pages/widgets/categories_section.dart';
+
 
 class CategoryCard extends StatelessWidget {
-  String? name;
-  String? imageUrl;
+  final String? name;
+  final String? imageUrl;
 
-  CategoryCard({Key? key, this.name, this.imageUrl}) : super(key: key);
+  const CategoryCard({super.key, this.name, this.imageUrl});
 
   @override
   Widget build(BuildContext context) {

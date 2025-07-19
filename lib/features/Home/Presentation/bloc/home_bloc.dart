@@ -68,13 +68,25 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   }
 
   Future<void> _onFetchRestaurents(FetchRestaurents event, Emitter<HomeState> emit) async {
+    if (state.hasReachedMax) return;
+
     emit(state.copyWith(isLoadingRestaurents: true, error: null));
 
-    final result = await getRestaurentsUseCase(NoParams());
+    final result = await getRestaurentsUseCase(GetRestaurentsParams(offset: event.offset, limit: event.limit));
 
     result.fold(
       (failure) => emit(state.copyWith(isLoadingRestaurents: false, error: failure.message)),
-      (restaurents) => emit(state.copyWith(isLoadingRestaurents: false, restaurents: restaurents)),
+      (restaurents) {
+        if (restaurents.isEmpty) {
+          emit(state.copyWith(isLoadingRestaurents: false, hasReachedMax: true));
+        } else {
+          emit(state.copyWith(
+            isLoadingRestaurents: false,
+            restaurents: List.of(state.restaurents ?? [])..addAll(restaurents),
+            hasReachedMax: false,
+          ));
+        }
+      },
     );
   }
 }

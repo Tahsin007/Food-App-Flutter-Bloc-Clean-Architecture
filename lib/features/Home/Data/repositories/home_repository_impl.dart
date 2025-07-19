@@ -54,9 +54,9 @@ class HomeRepositoryImpl implements HomeRepository {
   }
 
   @override
-  Future<Either<Failure, List<RestaurentEntity>>> getRestaurents() async {
+  Future<Either<Failure, List<RestaurentEntity>>> getRestaurents({required int offset, required int limit}) async {
     try {
-      final restaurents = await remoteDataSource.getRestaurents();
+      final restaurents = await remoteDataSource.getRestaurents(offset: offset, limit: limit);
       return Right(restaurents);
     } catch (e) {
       return Left(Failure(e.toString()));

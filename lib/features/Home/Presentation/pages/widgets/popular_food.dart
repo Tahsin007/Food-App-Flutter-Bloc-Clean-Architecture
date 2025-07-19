@@ -20,26 +20,6 @@ class _PopularFoodSectionState extends State<PopularFoodSection> {
     super.initState();
     context.read<HomeBloc>().add(FetchPopularProducts());
   }
-  final List<FoodItem> popularFoods = [
-    FoodItem(
-      name: 'Fried Noodles',
-      price: 7.50,
-      rating: 4.5,
-      image: 'assets/noodles.jpg',
-    ),
-    FoodItem(
-      name: 'Fried Noodles',
-      price: 7.50,
-      rating: 4.5,
-      image: 'assets/noodles.jpg',
-    ),
-    FoodItem(
-      name: 'Fried Rice',
-      price: 8.00,
-      rating: 4.3,
-      image: 'assets/rice.jpg',
-    ),
-  ];
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<HomeBloc, HomeState>(
@@ -71,20 +51,6 @@ class _PopularFoodSectionState extends State<PopularFoodSection> {
         }
       },
     );
-    ;
   }
 }
 
-class FoodItem {
-  final String name;
-  final double price;
-  final double rating;
-  final String image;
-
-  FoodItem({
-    required this.name,
-    required this.price,
-    required this.rating,
-    required this.image,
-  });
-}

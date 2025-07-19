@@ -15,6 +15,7 @@ class HomeState {
   final List<ProductEntity>? products;
   final List<FoodCampaignEntity>? foodCampaigns;
   final List<RestaurentEntity>? restaurents;
+  final bool hasReachedMax;
   final String? error;
 
   const HomeState({
@@ -28,6 +29,7 @@ class HomeState {
     this.categories,
     this.products,
     this.foodCampaigns,
+    this.hasReachedMax = false,
     this.error,
   });
 
@@ -42,6 +44,7 @@ class HomeState {
     List<CategoryEntity>? categories,
     List<ProductEntity>? products,
     List<FoodCampaignEntity>? foodCampaigns,
+    bool? hasReachedMax,
     String? error,
   }) {
     return HomeState(
@@ -55,6 +58,7 @@ class HomeState {
       banners: banners ?? this.banners,
       categories: categories ?? this.categories,
       products: products ?? this.products,
+      hasReachedMax: hasReachedMax ?? this.hasReachedMax,
       error: error,
     );
   }

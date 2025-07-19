@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:stack_food/core/theme/app_pallete.dart';
 import 'package:stack_food/features/Home/Presentation/bloc/home_bloc.dart';
-import 'package:stack_food/features/Home/Presentation/bloc/home_event.dart';
+
 import 'package:stack_food/features/Home/Presentation/bloc/home_state.dart';
 import 'package:stack_food/features/Home/Presentation/pages/widgets/app_search_bar.dart';
 import 'package:stack_food/features/Home/Presentation/pages/widgets/bottom_nav.dart';
@@ -36,25 +36,23 @@ class _StackFoodHomeState extends State<StackFoodHome> {
         builder: (context, state) {
           return Padding(
             padding: const EdgeInsets.all(16.0),
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  AppSearchBar(hintText: "Search food or restaurant here..."),
-                  SizedBox(height: 20),
-                  MenuBannerSection(),
+            child: ListView(
+              children: [
+                AppSearchBar(hintText: "Search food or restaurant here..."),
+                SizedBox(height: 20),
+                MenuBannerSection(),
                   SizedBox(height: 20),
                   CategoriesSection(),
                   SizedBox(height: 20),
                   PopularFoodSection(),
                   SizedBox(height: 30),
                   FoodCampaignSection(),
-                  SizedBox(height: 20),
-                  RestaurentSection(),
-                ],
-              ),
+                SizedBox(height: 20),
+                RestaurentSection(),
+              ],
             ),
           );
-        },
+        }
       ),
     );
   }

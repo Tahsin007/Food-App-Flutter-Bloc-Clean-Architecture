@@ -5,7 +5,7 @@ import 'package:stack_food/features/Home/Domain/entities/food_campaign_entity.da
 class CampaignCard extends StatelessWidget {
   final FoodCampaignEntity campaign;
 
-  const CampaignCard({Key? key, required this.campaign}) : super(key: key);
+  const CampaignCard({super.key, required this.campaign});
 
   @override
   Widget build(BuildContext context) {

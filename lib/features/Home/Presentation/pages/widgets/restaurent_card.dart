@@ -5,7 +5,7 @@ import 'package:stack_food/features/Home/Domain/entities/restaurent_entity.dart'
 class RestaurantCard extends StatelessWidget {
   final RestaurentEntity restaurant;
 
-  const RestaurantCard({Key? key, required this.restaurant}) : super(key: key);
+  const RestaurantCard({super.key, required this.restaurant});
 
   @override
   Widget build(BuildContext context) {
