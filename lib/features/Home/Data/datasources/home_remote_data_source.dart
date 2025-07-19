@@ -3,10 +3,12 @@ import 'package:http/http.dart' as http;
 import 'package:stack_food/core/constants/api_constants.dart';
 import 'package:stack_food/features/Home/Data/models/banner_model.dart';
 import 'package:stack_food/features/Home/Data/models/category_model.dart';
+import 'package:stack_food/features/Home/Data/models/popular_product_model.dart';
 
 abstract class HomeRemoteDataSource {
   Future<List<BannerModel>> getBanners();
   Future<List<CategoryModel>> getCategories();
+  Future<List<PopularProductModel>> getPopularProducts();
 }
 
 class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
@@ -28,7 +30,7 @@ class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
     if (response.statusCode == 200) {
       final Map<String, dynamic> data = json.decode(response.body);
       final bannerResponse = BannerResponse.fromJson(data);
-      print("Decoded data: $bannerResponse");
+      // print("Decoded data: $bannerResponse");
       return bannerResponse.banners!
           .map(
             (banner) => BannerModel(
@@ -42,34 +44,62 @@ class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
       throw Exception('Failed to load banners');
     }
   }
-  
+
   @override
-  Future<List<CategoryModel>> getCategories() async{
-    try{
+  Future<List<CategoryModel>> getCategories() async {
+    try {
       final response = await client.get(
         Uri.parse('${ApiConstants.apiUrl!}/api/v1/categories'),
         headers: {
-        'Content-Type': ApiConstants.contentType,
-        'zoneId': ApiConstants.zoneId,
-        'latitude': ApiConstants.latitude,
-        'longitude': ApiConstants.longitude,
-      },
+          'Content-Type': ApiConstants.contentType,
+          'zoneId': ApiConstants.zoneId,
+          'latitude': ApiConstants.latitude,
+          'longitude': ApiConstants.longitude,
+        },
       );
-      if(response.statusCode == 200){
-          final List<dynamic> categoriesList = json.decode(response.body);
-          final categoriResponse = categoriesList
-              .map((category) => CategoryModel.fromJson(category))
-              .toList();
-          print("Decoded data: $categoriResponse");
-          print("response : ${response.body}");
-          return categoriResponse;
-      }else{
-        print("Error fetching categories: ${response.statusCode}");
+      if (response.statusCode == 200) {
+        final List<dynamic> categoriesList = json.decode(response.body);
+        final categoriResponse = categoriesList
+            .map((category) => CategoryModel.fromJson(category))
+            .toList();
+        // print("Decoded data: $categoriResponse");
+        // print("response : ${response.body}");
+        return categoriResponse;
+      } else {
+        // print("Error fetching categories: ${response.statusCode}");
         throw Exception('Failed to load categories');
       }
-    }catch (e){
-      print("Error fetching categories: $e");
+    } catch (e) {
+      // print("Error fetching categories: $e");
       throw Exception('Failed to load categories');
+    }
+  }
+
+  @override
+  Future<List<PopularProductModel>> getPopularProducts() async {
+    try {
+      final response = await client.get(
+        Uri.parse('${ApiConstants.apiUrl!}/api/v1/products/popular'),
+        headers: {
+          'Content-Type': ApiConstants.contentType,
+          'zoneId': ApiConstants.zoneId,
+          'latitude': ApiConstants.latitude,
+          'longitude': ApiConstants.longitude,
+        },
+      );
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> data = json.decode(response.body);
+        final productResponse = PopularProductsResponse.fromJson(data);
+        print("Popular Product Data: ${response.statusCode}");
+        return productResponse.products!;
+
+      } else {
+        print("Error fetching popular products: ${response.statusCode}");
+        throw Exception('Failed to load propular products');
+      }
+    } catch (e) {
+      print("Exception in getPopularProducts: $e");
+      throw Exception('Failed to load popular products');
     }
   }
 }

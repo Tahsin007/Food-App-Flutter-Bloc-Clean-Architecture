@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:stack_food/core/theme/app_pallete.dart';
+import 'package:stack_food/features/Home/Domain/entities/product_entity.dart';
 import 'package:stack_food/features/Home/Presentation/pages/widgets/popular_food.dart';
 
 class FoodCard extends StatelessWidget {
-  final FoodItem food;
+  final ProductEntity food;
 
   const FoodCard({Key? key, required this.food}) : super(key: key);
 
@@ -26,19 +27,11 @@ class FoodCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
+          Image.network(
+            food.imageUrl,
             height: 100,
-            decoration: BoxDecoration(
-              color: AppPallete.lightGray,
-              borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
-            ),
-            child: Center(
-              child: Icon(
-                Icons.restaurant,
-                size: 40,
-                color: AppPallete.darkGray,
-              ),
-            ),
+            width: 150,
+            fit: BoxFit.cover,
           ),
           Padding(
             padding: EdgeInsets.all(12),
@@ -64,7 +57,7 @@ class FoodCard extends StatelessWidget {
                     Icon(Icons.star, color: Colors.amber, size: 16),
                     SizedBox(width: 4),
                     Text(
-                      food.rating.toString(),
+                      food.avgRating.toString(),
                       style: TextStyle(fontSize: 12),
                     ),
                   ],

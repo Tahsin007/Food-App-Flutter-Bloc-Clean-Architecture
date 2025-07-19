@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:stack_food/features/Home/Presentation/bloc/home_bloc.dart';
+import 'package:stack_food/features/Home/Presentation/bloc/home_event.dart';
 import 'package:stack_food/features/Home/Presentation/bloc/home_state.dart';
 import 'package:stack_food/features/Home/Presentation/pages/widgets/category_card.dart';
 import 'package:stack_food/features/Home/Presentation/pages/widgets/section_header.dart';
@@ -16,6 +17,7 @@ class _CategoriesSectionState extends State<CategoriesSection> {
   @override
   void initState() {
     super.initState();
+    context.read<HomeBloc>().add(FetchCategories());
   }
 
   @override

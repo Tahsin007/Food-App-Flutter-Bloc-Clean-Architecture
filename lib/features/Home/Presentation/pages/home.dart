@@ -23,8 +23,7 @@ class _StackFoodHomeState extends State<StackFoodHome> {
   @override
   void initState() {
     super.initState();
-    context.read<HomeBloc>().add(FetchBanners());
-    context.read<HomeBloc>().add(FetchCategories());
+
   }
 
   @override

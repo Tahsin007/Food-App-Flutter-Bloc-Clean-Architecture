@@ -30,6 +30,7 @@ class _MenuBannerSectionState extends State<MenuBannerSection> {
   void initState() {
     super.initState();
     _pageController = PageController();
+    context.read<HomeBloc>().add(FetchBanners());
 
     // Autoplay will be started after banners are loaded in BlocBuilder
   }

@@ -5,6 +5,7 @@ import 'package:stack_food/features/Home/Data/repositories/home_repository_impl.
 import 'package:stack_food/features/Home/Domain/repositories/home_repository.dart';
 import 'package:stack_food/features/Home/Domain/usecases/get_banners.dart';
 import 'package:stack_food/features/Home/Domain/usecases/get_categories.dart';
+import 'package:stack_food/features/Home/Domain/usecases/get_popular_products.dart';
 import 'package:stack_food/features/Home/Presentation/bloc/home_bloc.dart';
 
 final sl = GetIt.instance;
@@ -34,9 +35,16 @@ void _initHome() {
     () => GetCategoriesUseCase(sl()),
   );
   sl.registerLazySingleton<GetBannersUseCase>(() => GetBannersUseCase(sl()));
+  sl.registerLazySingleton<GetPopularProductsUseCase>(
+    () => GetPopularProductsUseCase(sl()),
+  );
 
   // Register Home Bloc
   sl.registerFactory<HomeBloc>(
-    () => HomeBloc(sl<GetBannersUseCase>(), sl<GetCategoriesUseCase>()),
+    () => HomeBloc(
+      sl<GetBannersUseCase>(),
+      sl<GetCategoriesUseCase>(),
+      sl<GetPopularProductsUseCase>(),
+    ),
   );
 }
