@@ -2,8 +2,8 @@
 
 Stack Food is a modern Flutter application designed for food-related services, emphasizing a clean architecture and robust state management. It showcases best practices in Flutter development, including API integration, local data persistence, and a modular feature-driven structure.
 
-##Screenshot 
-![Alt Text](https://github.com/user-attachments/assets/04e7579e-113e-479d-a973-2e9b8ed6f30d)
+## Screenshot 
+<img width="1920" height="1080" alt="Image" src="https://github.com/user-attachments/assets/b8408b43-ebee-4dc9-8061-919f6ab2236b" />
 
 ## Libraries Used
 
