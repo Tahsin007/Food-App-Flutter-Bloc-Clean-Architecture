@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:stack_food/core/theme/app_pallete.dart';
 import 'package:stack_food/features/Home/Presentation/bloc/home_bloc.dart';
-
 import 'package:stack_food/features/Home/Presentation/bloc/home_state.dart';
 import 'package:stack_food/features/Home/Presentation/pages/widgets/app_search_bar.dart';
 import 'package:stack_food/features/Home/Presentation/pages/widgets/bottom_nav.dart';
@@ -10,6 +9,7 @@ import 'package:stack_food/features/Home/Presentation/pages/widgets/categories_s
 import 'package:stack_food/features/Home/Presentation/pages/widgets/food_campaign_section.dart';
 import 'package:stack_food/features/Home/Presentation/pages/widgets/menu_banner.dart';
 import 'package:stack_food/features/Home/Presentation/pages/widgets/popular_food.dart';
+import 'package:stack_food/features/Home/Presentation/pages/widgets/responsive_layout.dart';
 import 'package:stack_food/features/Home/Presentation/pages/widgets/restaurent_section.dart';
 
 class StackFoodHome extends StatefulWidget {
@@ -20,10 +20,17 @@ class StackFoodHome extends StatefulWidget {
 }
 
 class _StackFoodHomeState extends State<StackFoodHome> {
+  int _selectedIndex = 0;
+
   @override
   void initState() {
     super.initState();
+  }
 
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
   }
 
   @override
@@ -31,28 +38,74 @@ class _StackFoodHomeState extends State<StackFoodHome> {
     return Scaffold(
       backgroundColor: AppPallete.lightGray,
       appBar: _buildAppBar(),
-      bottomNavigationBar: const AppBottomNav(),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.green,
+        shape: CircleBorder(),
+        onPressed: () {
+          // cart acti,on
+        },
+        child: const Icon(Icons.shopping_cart, color: Colors.white),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      bottomNavigationBar: CustomBottomAppBar(
+        selectedIndex: _selectedIndex,
+        onItemTapped: _onItemTapped,
+      ),
       body: BlocBuilder<HomeBloc, HomeState>(
         builder: (context, state) {
-          return Padding(
-            padding: const EdgeInsets.all(16.0),
+          return ResponsiveLayout(
+            mobileLayout: _buildMobileLayout(),
+            webLayout: _buildWebLayout(),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildMobileLayout() {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: ListView(
+        children: [
+          AppSearchBar(hintText: "Search food or restaurant here..."),
+          SizedBox(height: 20),
+          MenuBannerSection(),
+          SizedBox(height: 20),
+          CategoriesSection(),
+          SizedBox(height: 20),
+          PopularFoodSection(),
+          SizedBox(height: 30),
+          FoodCampaignSection(),
+          SizedBox(height: 20),
+          RestaurentSection(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildWebLayout() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 40.0, vertical: 20.0),
+      child: Column(
+        children: [
+          AppSearchBar(hintText: "Search food or restaurant here..."),
+          SizedBox(height: 20),
+          Expanded(
             child: ListView(
               children: [
-                AppSearchBar(hintText: "Search food or restaurant here..."),
+                MenuBannerSection(isWeb: true),
                 SizedBox(height: 20),
-                MenuBannerSection(),
-                  SizedBox(height: 20),
-                  CategoriesSection(),
-                  SizedBox(height: 20),
-                  PopularFoodSection(),
-                  SizedBox(height: 30),
-                  FoodCampaignSection(),
+                CategoriesSection(),
+                SizedBox(height: 20),
+                PopularFoodSection(),
+                SizedBox(height: 30),
+                FoodCampaignSection(),
                 SizedBox(height: 20),
                 RestaurentSection(),
               ],
             ),
-          );
-        }
+          ),
+        ],
       ),
     );
   }

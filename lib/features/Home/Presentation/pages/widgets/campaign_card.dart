@@ -9,97 +9,160 @@ class CampaignCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    late String discountText;
+    if (campaign.discountType == 'percent') {
+      discountText = '${campaign.discount}% off';
+    } else {
+      discountText = '${campaign.discount}Tk off';
+    }
     return Container(
-      width: 180,
-      margin: EdgeInsets.only(right: 10),
+      // width: 260,
+      margin: const EdgeInsets.only(right: 10),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppPallete.white,
-        borderRadius: BorderRadius.circular(12),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(14),
         boxShadow: [
           BoxShadow(
-            color: AppPallete.darkGray.withValues(alpha: 0.1),
-            spreadRadius: 1,
-            blurRadius: 5,
+            color: Colors.grey.withOpacity(0.15),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
           ),
         ],
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Row(
         children: [
-          ClipRRect(
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(12),
-              topRight: Radius.circular(12),
-            ),
-            child: Image.network(
-              campaign.imageUrl,
-              height: 120,
-              width: double.infinity,
-              fit: BoxFit.cover,
-            ),
+          /// Image with discount badge
+          Stack(
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: Image.network(
+                  campaign.imageUrl,
+                  width: 90,
+                  height: 110,
+                  fit: BoxFit.cover,
+                ),
+              ),
+              Positioned(
+                top: 6,
+                left: 6,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.green,
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  child: Text(
+                    discountText,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
-          Padding(
-            padding: EdgeInsets.all(12),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  campaign.name,
-                  style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
-                ),
-                SizedBox(height: 4),
-                Row(
-                  children: [
-                    Text(
-                      '\$${calculateDiscountedPrice(campaign.price, campaign.discount,campaign.discountType).toStringAsFixed(2)}',
-                      style: TextStyle(
-                        color: AppPallete.primaryColor,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
+
+          const SizedBox(width: 12),
+
+          /// Product info
+          Stack(
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    campaign.name,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    campaign.restaurentName.toString(),
+                    style: const TextStyle(
+                      fontSize: 12,
+                      color: Colors.grey,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+
+                  /// Ratings
+                  Row(
+                    children: List.generate(
+                      5,
+                      (index) => Icon(
+                        Icons.star,
+                        size: 14,
+                        color: index < campaign.avgRating
+                            ? Colors.green
+                            : Colors.grey.shade300,
                       ),
                     ),
-                    SizedBox(width: 8),
-                    Text(
-                      '\$${campaign.price.toStringAsFixed(2)}',
-                      style: TextStyle(
-                        color: Colors.grey,
-                        fontSize: 12,
-                        decoration: TextDecoration.lineThrough,
+                  ),
+
+                  const SizedBox(height: 6),
+
+                  /// Price row
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text(
+                        '\$${calculateDiscountedPrice(campaign.price, campaign.discount, campaign.discountType)}',
+                        style: const TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 4),
-                Row(
-                  children: [
-                    Icon(Icons.star, color: Colors.amber, size: 16),
-                    SizedBox(width: 4),
-                    Text(
-                      campaign.avgRating.toStringAsFixed(2),
-                      style: TextStyle(fontSize: 12),
-                    ),
-                    Spacer(),
-                    Container(
-                      width: 24,
-                      height: 24,
-                      decoration: BoxDecoration(
-                        color: AppPallete.primaryColor,
-                        shape: BoxShape.circle,
+                      const SizedBox(width: 6),
+                      Text(
+                        '\$${campaign.price.toStringAsFixed(0)}',
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: Colors.grey,
+                          decoration: TextDecoration.lineThrough,
+                        ),
                       ),
-                      child: Icon(Icons.add, color: Colors.white, size: 16),
-                    ),
-                  ],
+                      SizedBox(width: 6),
+                    ],
+                  ),
+                ],
+              ),
+              Positioned(
+                bottom: -10,
+                right: -18,
+                child: IconButton(
+                  icon: const Icon(Icons.add, color: Colors.black),
+                  onPressed: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('${campaign.name} added to cart')),
+                    );
+                  },
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
+
+          /// Add button
         ],
       ),
     );
   }
 }
 
-double calculateDiscountedPrice(int actualPrice, int discountPercent, String discountType) {
+double calculateDiscountedPrice(
+  int actualPrice,
+  int discountPercent,
+  String discountType,
+) {
   if (discountType == 'percentage') {
     return actualPrice - (actualPrice * discountPercent / 100);
   } else {

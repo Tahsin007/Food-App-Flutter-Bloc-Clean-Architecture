@@ -1,5 +1,7 @@
 import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
+import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
+import 'package:stack_food/core/network/network_info.dart';
 import 'package:stack_food/features/Home/Data/datasources/home_remote_data_source.dart';
 import 'package:stack_food/features/Home/Data/repositories/home_repository_impl.dart';
 import 'package:stack_food/features/Home/Domain/repositories/home_repository.dart';
@@ -15,24 +17,25 @@ final sl = GetIt.instance;
 Future<void> initDependencies() async {
   sl.registerLazySingleton<http.Client>(
     () => http.Client(),
-  ); // Register http.Client
+  );
 
-  // Initialize Home dependencies
+
+  sl.registerLazySingleton<NetworkInfo>(
+    () => NetworkInfoImpl(),
+  );
+
   _initHome();
 }
 
 void _initHome() {
-  // Register Home Remote Data Source
   sl.registerLazySingleton<HomeRemoteDataSource>(
-    () => HomeRemoteDataSourceImpl(client: sl()),
+    () => HomeRemoteDataSourceImpl(client: sl(), networkInfo: sl()),
   );
 
-  // Register Home Repository
   sl.registerLazySingleton<HomeRepository>(
-    () => HomeRepositoryImpl(remoteDataSource: sl()),
+    () => HomeRepositoryImpl(remoteDataSource: sl(), networkInfo: sl()),
   );
 
-  // Register Use Cases
   sl.registerLazySingleton<GetCategoriesUseCase>(
     () => GetCategoriesUseCase(sl()),
   );
@@ -47,7 +50,6 @@ void _initHome() {
     () => GetRestaurentsUseCase(sl()),
   );
 
-  // Register Home Bloc
   sl.registerFactory<HomeBloc>(
     () => HomeBloc(
       sl<GetBannersUseCase>(),
@@ -58,3 +60,4 @@ void _initHome() {
     ),
   );
 }
+

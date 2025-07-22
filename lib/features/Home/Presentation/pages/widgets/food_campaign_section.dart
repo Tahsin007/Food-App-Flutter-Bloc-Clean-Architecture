@@ -28,26 +28,28 @@ class _FoodCampaignSectionState extends State<FoodCampaignSection> {
           return Center(child: CircularProgressIndicator());
         } else if (state.error != null) {
           return Center(child: Text('Error: ${state.error}'));
-        } else if (state.foodCampaigns == null || state.foodCampaigns!.isEmpty) {
-          return Center(child: Text('No food campaigns available'));
-        }
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SectionHeader(title: 'Food Campaign'),
-            Container(
-              height: 220,
-              child: ListView.builder(
-                // padding: EdgeInsets.symmetric(horizontal: 16),
-                scrollDirection: Axis.horizontal,
-                itemCount: state.foodCampaigns?.length ?? 0,
-                itemBuilder: (context, index) {
-                  return CampaignCard(campaign: state.foodCampaigns![index]);
-                },
+        } else if (state.foodCampaigns != null &&
+            state.foodCampaigns!.isNotEmpty) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SectionHeader(title: 'Food Campaigns'),
+              SizedBox(
+                height: 130,
+                width: double.infinity,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: state.foodCampaigns!.length,
+                  itemBuilder: (context, index) {
+                    final campaign = state.foodCampaigns![index];
+                    return CampaignCard(campaign: campaign);
+                  },
+                ),
               ),
-            ),
-          ],
-        );
+            ],
+          );
+        }
+        return Center(child: Text("No Campaigns Available"));
       },
     );
   }

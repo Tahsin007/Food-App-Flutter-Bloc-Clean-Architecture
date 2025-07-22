@@ -1,45 +1,58 @@
 import 'package:flutter/material.dart';
 import 'package:stack_food/core/theme/app_pallete.dart';
 
-class AppBottomNav extends StatelessWidget {
-  const AppBottomNav({super.key});
+class CustomBottomAppBar extends StatelessWidget {
+  final int selectedIndex;
+  final Function(int) onItemTapped;
+
+  const CustomBottomAppBar({
+    super.key,
+    required this.selectedIndex,
+    required this.onItemTapped,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return BottomNavigationBar(
-      type: BottomNavigationBarType.fixed,
-      backgroundColor: AppPallete.white,
-      selectedItemColor: AppPallete.primaryColor,
-      unselectedItemColor: AppPallete.darkGray,
-      items: [
-        BottomNavigationBarItem(
-          icon: Icon(Icons.home),
-          label: 'Home',
+    return BottomAppBar(
+      shape: const CircularNotchedRectangle(),
+      notchMargin: 6,
+      color: AppPallete.white,
+      child: SizedBox(
+        height: 60,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            _buildIcon(Icons.home, 'Home', 0),
+            _buildIcon(Icons.favorite_outline, 'Favorites', 1),
+            const SizedBox(width: 40), // space for FAB
+            _buildIcon(Icons.receipt_long, 'Orders', 2),
+            _buildIcon(Icons.menu, 'Menu', 3),
+          ],
         ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.favorite_outline),
-          label: 'Favorites',
-        ),
-        BottomNavigationBarItem(
-          icon: Container(
-            padding: EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: Colors.green,
-              shape: BoxShape.circle,
-            ),
-            child: Icon(Icons.shopping_cart, color: Colors.white),
+      ),
+    );
+  }
+
+  Widget _buildIcon(IconData icon, String label, int index) {
+    final isSelected = selectedIndex == index;
+    return GestureDetector(
+      onTap: () => onItemTapped(index),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            icon,
+            color: isSelected ? AppPallete.primaryColor : AppPallete.darkGray,
           ),
-          label: 'Cart',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.receipt_long),
-          label: 'Orders',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.menu),
-          label: 'Menu',
-        ),
-      ],
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 10,
+              color: isSelected ? AppPallete.primaryColor : AppPallete.darkGray,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

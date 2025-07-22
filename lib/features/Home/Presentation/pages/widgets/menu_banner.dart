@@ -10,11 +10,13 @@ import 'package:stack_food/features/Home/Presentation/bloc/home_state.dart';
 class MenuBannerSection extends StatefulWidget {
   final bool autoPlay;
   final Duration autoPlayDuration;
+  final bool isWeb;
 
   const MenuBannerSection({
     super.key,
     this.autoPlay = true,
     this.autoPlayDuration = const Duration(seconds: 3),
+    this.isWeb = false,
   });
 
   @override
@@ -29,7 +31,7 @@ class _MenuBannerSectionState extends State<MenuBannerSection> {
   @override
   void initState() {
     super.initState();
-    _pageController = PageController();
+    _pageController = PageController(viewportFraction: widget.isWeb ? 1.0 / 3.0 : 1.0);
     context.read<HomeBloc>().add(FetchBanners());
 
     // Autoplay will be started after banners are loaded in BlocBuilder
@@ -84,7 +86,7 @@ class _MenuBannerSectionState extends State<MenuBannerSection> {
           if (widget.autoPlay &&
               state.banners!.isNotEmpty &&
               _autoPlayTimer == null) {
-            _startAutoPlay(state.banners!);
+            _startAutoPlay(state.banners!); 
           }
           return Column(
             children: [
