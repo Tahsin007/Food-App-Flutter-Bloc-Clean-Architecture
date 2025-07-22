@@ -10,6 +10,7 @@ class FoodCampaignModel extends FoodCampaignEntity {
     required super.price,
     required super.discount,
     required super.discountType,
+    required super.restaurentName,
   });
 
   factory FoodCampaignModel.fromJson(Map<String, dynamic> json) {
@@ -24,6 +25,7 @@ class FoodCampaignModel extends FoodCampaignEntity {
       price: json['price'],
       discount: json['discount'],
       discountType: json['discount_type'] ?? 'percentage',
+      restaurentName: json['restaurant_name'] ?? 'Unknown Restaurant',
     );
   }
 }

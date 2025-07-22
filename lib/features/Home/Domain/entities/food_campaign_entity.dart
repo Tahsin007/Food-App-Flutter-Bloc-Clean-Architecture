@@ -7,6 +7,7 @@ class FoodCampaignEntity {
   int price;
   int discount;
   String discountType;
+  String restaurentName;
 
   FoodCampaignEntity({
     required this.id,
@@ -17,6 +18,7 @@ class FoodCampaignEntity {
     required this.price,
     required this.discount,
     required this.discountType,
+    required this.restaurentName,
 });
 
 }

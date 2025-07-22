@@ -9,92 +9,149 @@ class CampaignCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    late String discountText;
+    if (campaign.discountType == 'percent') {
+      discountText = '${campaign.discount}% off';
+    } else {
+      discountText = '${campaign.discount}Tk off';
+    }
     return Container(
-      width: 250,
-      height: 100,
-      margin: EdgeInsets.only(right: 10),
+      // width: 260,
+      margin: const EdgeInsets.only(right: 10),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppPallete.white,
-        borderRadius: BorderRadius.circular(12),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(14),
         boxShadow: [
           BoxShadow(
-            color: AppPallete.darkGray.withValues(alpha: 0.1),
-            spreadRadius: 1,
-            blurRadius: 5,
+            color: Colors.grey.withOpacity(0.15),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
           ),
         ],
       ),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(
-            width: 100,
-            height: 100,
-            child: ClipRRect(
-              borderRadius: BorderRadius.horizontal(left: Radius.circular(12)),
-              child: Image.network(campaign.imageUrl, fit: BoxFit.cover),
-            ),
+          /// Image with discount badge
+          Stack(
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: Image.network(
+                  campaign.imageUrl,
+                  width: 90,
+                  height: 110,
+                  fit: BoxFit.cover,
+                ),
+              ),
+              Positioned(
+                top: 6,
+                left: 6,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.green,
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  child: Text(
+                    discountText,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
-          Expanded(
-            child: Padding(
-              padding: EdgeInsets.all(12),
-              child: Column(
+
+          const SizedBox(width: 12),
+
+          /// Product info
+          Stack(
+            children: [
+              Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment:
-                    MainAxisAlignment.center, // Vertically center content
                 children: [
                   Text(
                     campaign.name,
-                    style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                  SizedBox(height: 4),
+                  const SizedBox(height: 4),
+                  Text(
+                    campaign.restaurentName.toString(),
+                    style: const TextStyle(
+                      fontSize: 12,
+                      color: Colors.grey,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+
+                  /// Ratings
                   Row(
+                    children: List.generate(
+                      5,
+                      (index) => Icon(
+                        Icons.star,
+                        size: 14,
+                        color: index < campaign.avgRating
+                            ? Colors.green
+                            : Colors.grey.shade300,
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 6),
+
+                  /// Price row
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Text(
-                        '\$${calculateDiscountedPrice(campaign.price, campaign.discount, campaign.discountType).toStringAsFixed(2)}',
-                        style: TextStyle(
-                          color: AppPallete.primaryColor,
+                        '\$${calculateDiscountedPrice(campaign.price, campaign.discount, campaign.discountType)}',
+                        style: const TextStyle(
+                          fontSize: 12,
                           fontWeight: FontWeight.bold,
-                          fontSize: 16,
                         ),
                       ),
-                      SizedBox(width: 8),
+                      const SizedBox(width: 6),
                       Text(
-                        '\$${campaign.price.toStringAsFixed(2)}',
-                        style: TextStyle(
-                          color: Colors.grey,
+                        '\$${campaign.price.toStringAsFixed(0)}',
+                        style: const TextStyle(
                           fontSize: 12,
+                          color: Colors.grey,
                           decoration: TextDecoration.lineThrough,
                         ),
                       ),
-                    ],
-                  ),
-                  SizedBox(height: 4),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Icon(Icons.star, color: Colors.amber, size: 16),
-                      SizedBox(width: 4),
-                      Text(
-                        campaign.avgRating.toStringAsFixed(2),
-                        style: TextStyle(fontSize: 12),
-                      ),
-                      // Spacer(),
-                      Container(
-                        width: 24,
-                        height: 24,
-                        decoration: BoxDecoration(
-                          color: AppPallete.primaryColor,
-                          shape: BoxShape.circle,
-                        ),
-                        child: Icon(Icons.add, color: Colors.white, size: 16),
-                      ),
+                      SizedBox(width: 6),
                     ],
                   ),
                 ],
               ),
-            ),
+              Positioned(
+                bottom: -10,
+                right: -18,
+                child: IconButton(
+                  icon: const Icon(Icons.add, color: Colors.black),
+                  onPressed: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('${campaign.name} added to cart')),
+                    );
+                  },
+                ),
+              ),
+            ],
           ),
+
+          /// Add button
         ],
       ),
     );

@@ -129,6 +129,7 @@ class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
       ),
           (data) {
         final List<dynamic> campaignList = data;
+        print('Campaign List: $campaignList');
         return campaignList
             .map((food) => FoodCampaignModel.fromJson(food))
             .toList();

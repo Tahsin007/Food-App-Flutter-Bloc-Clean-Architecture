@@ -23,7 +23,6 @@ class _StackFoodHomeState extends State<StackFoodHome> {
   @override
   void initState() {
     super.initState();
-
   }
 
   @override
@@ -41,18 +40,18 @@ class _StackFoodHomeState extends State<StackFoodHome> {
                 AppSearchBar(hintText: "Search food or restaurant here..."),
                 SizedBox(height: 20),
                 MenuBannerSection(),
-                  SizedBox(height: 20),
-                  CategoriesSection(),
-                  SizedBox(height: 20),
-                  PopularFoodSection(),
-                  SizedBox(height: 30),
-                  FoodCampaignSection(),
+                SizedBox(height: 20),
+                CategoriesSection(),
+                SizedBox(height: 20),
+                PopularFoodSection(),
+                SizedBox(height: 30),
+                FoodCampaignSection(),
                 SizedBox(height: 20),
                 RestaurentSection(),
               ],
             ),
           );
-        }
+        },
       ),
     );
   }
