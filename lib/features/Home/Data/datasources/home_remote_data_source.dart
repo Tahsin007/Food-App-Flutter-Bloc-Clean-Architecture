@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:stack_food/core/constants/api_constants.dart';
+import 'package:stack_food/core/error/exceptions.dart';
+import 'package:stack_food/core/network/network_info.dart';
 import 'package:stack_food/features/Home/Data/models/banner_model.dart';
 import 'package:stack_food/features/Home/Data/models/category_model.dart';
 import 'package:stack_food/features/Home/Data/models/food_campaign_model.dart';
@@ -17,42 +19,66 @@ abstract class HomeRemoteDataSource {
 
 class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
   final http.Client client;
-  HomeRemoteDataSourceImpl({required this.client});
+  final NetworkInfo networkInfo;
 
-  @override
-  Future<List<BannerModel>> getBanners() async {
-    final response = await client.get(
-      Uri.parse('${ApiConstants.apiUrl!}/api/v1/banners'),
-      headers: {
-        'Content-Type': ApiConstants.contentType,
-        'zoneId': ApiConstants.zoneId,
-        'latitude': ApiConstants.latitude,
-        'longitude': ApiConstants.longitude,
-      },
-    );
+  HomeRemoteDataSourceImpl({required this.client, required this.networkInfo});
 
-    if (response.statusCode == 200) {
-      final Map<String, dynamic> data = json.decode(response.body);
-      final bannerResponse = BannerResponse.fromJson(data);
-      // print("Decoded data: $bannerResponse");
-      return bannerResponse.banners!
-          .map(
-            (banner) => BannerModel(
-              id: banner.id,
-              title: banner.title,
-              image: banner.image,
-            ),
-          )
-          .toList();
+  Future<T> _performRequest<T>(
+      Future<http.Response> Function() request,
+      T Function(dynamic) fromJson,
+      ) async {
+    if (await networkInfo.isConnected) {
+      try {
+        final response = await request();
+        if (response.statusCode == 200) {
+          try {
+            final data = json.decode(response.body);
+            return fromJson(data);
+          } catch (e) {
+            throw DataParsingException('Failed to parse data');
+          }
+        } else {
+          throw ServerException('Server error: ${response.statusCode}');
+        }
+      } catch (e) {
+        throw ServerException('Failed to connect to the server');
+      }
     } else {
-      throw Exception('Failed to load banners');
+      throw NoInternetException('No internet connection');
     }
   }
 
   @override
+  Future<List<BannerModel>> getBanners() async {
+    return _performRequest(
+          () => client.get(
+        Uri.parse('${ApiConstants.apiUrl!}/api/v1/banners'),
+        headers: {
+          'Content-Type': ApiConstants.contentType,
+          'zoneId': ApiConstants.zoneId,
+          'latitude': ApiConstants.latitude,
+          'longitude': ApiConstants.longitude,
+        },
+      ),
+          (data) {
+        final bannerResponse = BannerResponse.fromJson(data);
+        return bannerResponse.banners!
+            .map(
+              (banner) => BannerModel(
+            id: banner.id,
+            title: banner.title,
+            image: banner.image,
+          ),
+        )
+            .toList();
+      },
+    );
+  }
+
+  @override
   Future<List<CategoryModel>> getCategories() async {
-    try {
-      final response = await client.get(
+    return _performRequest(
+          () => client.get(
         Uri.parse('${ApiConstants.apiUrl!}/api/v1/categories'),
         headers: {
           'Content-Type': ApiConstants.contentType,
@@ -60,29 +86,20 @@ class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
           'latitude': ApiConstants.latitude,
           'longitude': ApiConstants.longitude,
         },
-      );
-      if (response.statusCode == 200) {
-        final List<dynamic> categoriesList = json.decode(response.body);
-        final categoriResponse = categoriesList
+      ),
+          (data) {
+        final List<dynamic> categoriesList = data;
+        return categoriesList
             .map((category) => CategoryModel.fromJson(category))
             .toList();
-        // print("Decoded data: $categoriResponse");
-        // print("response : ${response.body}");
-        return categoriResponse;
-      } else {
-        // print("Error fetching categories: ${response.statusCode}");
-        throw Exception('Failed to load categories');
-      }
-    } catch (e) {
-      // print("Error fetching categories: $e");
-      throw Exception('Failed to load categories');
-    }
+      },
+    );
   }
 
   @override
   Future<List<PopularProductModel>> getPopularProducts() async {
-    try {
-      final response = await client.get(
+    return _performRequest(
+          () => client.get(
         Uri.parse('${ApiConstants.apiUrl!}/api/v1/products/popular'),
         headers: {
           'Content-Type': ApiConstants.contentType,
@@ -90,27 +107,18 @@ class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
           'latitude': ApiConstants.latitude,
           'longitude': ApiConstants.longitude,
         },
-      );
-      if (response.statusCode == 200) {
-        final Map<String, dynamic> data = json.decode(response.body);
+      ),
+          (data) {
         final productResponse = PopularProductsResponse.fromJson(data);
-        
         return productResponse.products!;
-
-      } else {
-        
-        throw Exception('Failed to load propular products');
-      }
-    } catch (e) {
-      
-      throw Exception('Failed to load popular products');
-    }
+      },
+    );
   }
-  
+
   @override
   Future<List<FoodCampaignModel>> getFoodcampaigns() async {
-    try {
-      final response = await client.get(
+    return _performRequest(
+          () => client.get(
         Uri.parse('${ApiConstants.apiUrl!}/api/v1/campaigns/item'),
         headers: {
           'Content-Type': ApiConstants.contentType,
@@ -118,48 +126,34 @@ class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
           'latitude': ApiConstants.latitude,
           'longitude': ApiConstants.longitude,
         },
-      );
-      if (response.statusCode == 200) {
-        
-        final List<dynamic> data = json.decode(response.body);
-        final campaignResponse = data
+      ),
+          (data) {
+        final List<dynamic> campaignList = data;
+        return campaignList
             .map((food) => FoodCampaignModel.fromJson(food))
             .toList();
-
-        return campaignResponse;
-
-      } else {
-        
-        throw Exception('Failed to load campaign products');
-      }
-    } catch (e) {
-      
-      throw Exception('Failed to load food campaigns');
-    }
+      },
+    );
   }
-  
+
   @override
-  Future<List<RestaurentModel>> getRestaurents({required int offset, required int limit}) async {
-    try {
-      final response = await client.get(
-        Uri.parse('${ApiConstants.apiUrl!}/api/v1/restaurants/get-restaurants/all?offset=$offset&limit=$limit'),
+  Future<List<RestaurentModel>> getRestaurents(
+      {required int offset, required int limit}) async {
+    return _performRequest(
+          () => client.get(
+        Uri.parse(
+            '${ApiConstants.apiUrl!}/api/v1/restaurants/get-restaurants/all?offset=$offset&limit=$limit'),
         headers: {
           'Content-Type': ApiConstants.contentType,
           'zoneId': ApiConstants.zoneId,
           'latitude': ApiConstants.latitude,
           'longitude': ApiConstants.longitude,
         },
-      );
-      if (response.statusCode == 200) {
-        final Map<String, dynamic> data = json.decode(response.body);
+      ),
+          (data) {
         final restaurentResponse = RestaurentResponse.fromJson(data);
-        
         return restaurentResponse.restaurants;
-      } else {
-        throw Exception('Failed to load restaurants');
-      }
-    } catch (error) {
-      throw Exception('Failed to load restaurants: $error');
-    }
+      },
+    );
   }
 }
